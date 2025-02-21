@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editable Tax Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+      }
+      .center-text {
+        text-align: center;
+      }
+      .right-text {
+        text-align: right;
+      }
+      input[type="text"],
+      input[type="date"] {
+        border: none;
+        width: 70%;
+        box-sizing: border-box;
+        padding: 5px;
+      }
+      input[type="text"]:focus,
+      input[type="date"]:focus {
+        outline: none;
+      }
+      .add-item-button {
+        margin-top: 10px;
+        padding: 10px;
+      }
+      .inv {
+        display: flex;
+        align-items: center;
+      }
+      .inv-input {
+        width: 100px !important;
+      }
+      .date-input {
+        width: 120px !important;
+      }
+      .min-width {
+        width: 20% !important;
+      }
+      .max-width {
+        width: 100% !important;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 class="center-text">Tax Invoice</h2>
+
+    <table>
+      <tr>
+        <td colspan="2">
+          <strong>J.S. JEWELLERS</strong><br />
+          GSTIN/UIN: <input type="text" value="08AFSP7904B1Z0" /><br />
+          State: <input class="min-width" type="text" value="Uttar Pradesh" />Code:
+          <input class="min-width" type="text" value="09" />
+        </td>
+        <td>
+          <div class="inv">
+            <strong>Invoice No.</strong><br /><input
+              class="inv-input"
+              type="text"
+              placeholder="0"
+            />
+          </div>
+          <br />
+          <div class="inv">
+            <strong>Dated:</strong><br /><input
+              class="date-input"
+              type="date"
+              placeholder="2024-08-05"
+            />
+          </div>
+        </td>
+        <td>
+          <strong>Mode/Terms of Payment</strong><br />
+	<select>
+        <option value="" disabled selected>Select Mode</option>
+        <option value="card">Card</option>
+        <option value="cash">Cash</option>
+        <option value="upi">UPI</option>
+        <option value="netbanking">NetBanking</option>
+        <option value="wallet">Digital Wallet (e.g., Paytm, PhonePe)</option>
+        <option value="paylater">Buy Now, Pay Later</option>
+        <option value="cheque">Cheque</option>
+        <option value="banktransfer">Bank Transfer</option>
+        <option value="paypal">PayPal</option>
+        <option value="crypto">Cryptocurrency (e.g., Bitcoin, Ethereum)</option>
+        <option value="giftcard">Gift Card</option>
+        <option value="mobilepayment">Mobile Payment (e.g., Apple Pay, Google Pay)</option>
+        <option value="cod">Cash on Delivery</option>
+    </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <strong>Consignee (Ship to)</strong><br />
+          <input type="text" placeholder="Billing Name" /><br />
+          <input
+            type="text"
+            placeholder="HNO GALI NO ROAD"
+          /><br />
+          <input type="text" placeholder="City" /><br />
+          State: <input class="min-width" type="text" placeholder="State" />Code:
+          <input class="min-width" type="text" placeholder="PinCode" />
+        </td>
+        <td colspan="2">
+          <strong>Buyer (Bill to)</strong><br />
+          <input type="text" placeholder="Billing Name" /><br />
+          <input
+            type="text"
+            placeholder="HNO GALI NO ROAD"
+          /><br />
+          <input type="text" placeholder="City" /><br />
+          State: <input class="min-width" type="text" placeholder="State" />Code:
+          <input class="min-width" type="text" placeholder="PinCode" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Reference No. & Date</strong><br /><input type="text" />
+        </td>
+        <td><strong>Buyer's Order No.</strong><br /><input type="text" /></td>
+        <td>
+          <strong>Dispatch Doc No.</strong><br /><input
+            type="text"
+            value="No Data"
+          />
+        </td>
+        <td>
+          <strong>Delivery Note Date</strong><br /><input
+            type="text"
+            value="No Data"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Dispatched Through</strong><br /><input type="text" /></td>
+        <td colspan="3">
+          <strong>Destination</strong><br /><input type="text" />
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th>S. No.</th>
+          <th>Description of Goods and Services</th>
+          <th>HSN/SAC</th>
+          <th>Quantity</th>
+          <th>Rate</th>
+          <th>Labour Charge</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody id="itemsTable">
+        <tr>
+          <td><input type="number" style="border: none" value="1" /></td>
+          <td>
+            <input type="text" class="max-width" value="" />
+          </td>
+          <td>
+            <input
+              type="text"
+              class="max-width hsn"
+			  style="border: none"
+              onblur="setupHsnInput()"
+              value=""
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              class="quantity max-width"
+			  style="border: none"
+              value=""
+              onblur="updateAmount()"
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              class="rate max-width"
+			  style="border: none"
+              onblur="updateAmount()"
+              value=""
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              class="labour max-width"
+			  style="border: none"
+              onblur="updateAmount()"
+              value=""
+            />
+          </td>
+          <td>
+            <input
+              type="number"
+              class="amount max-width"
+			  style="border: none"
+              value="0"
+              readonly
+            />
+          </td>
+        </tr>
+      </tbody>
+      <tbody>
+        <tr>
+          <td colspan="6" class="right-text"><strong>Total</strong></td>
+          <td><input type="text" id="totalAmount" value="0" readonly /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button class="add-item-button" onclick="addItem()">Add Item</button>
+
+    <table>
+      <tr>
+        <td colspan="4">
+          <strong>Amount Chargeable (in words):</strong> INR
+          <input type="text" id="amountInWords" readonly />
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Taxable Value</th>
+          <th>CGST (%)</th>
+          <th>SGST/UTGST (%)</th>
+          <th>Total Tax Amount</th>
+          <th>Total Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <input type="text" id="taxableValue" oninput="calculateTaxes()" />
+          </td>
+          <td>
+            <input
+              type="text"
+              id="cgstPercentage"
+              value="1.50%"
+              oninput="calculateTaxes()"
+            />
+          </td>
+          <td>
+            <input
+              type="text"
+              id="sgstPercentage"
+              value="1.50%"
+              oninput="calculateTaxes()"
+            />
+          </td>
+          <td><input type="text" id="totalTaxAmount" readonly /></td>
+          <td><input type="text" id="totalAmountWithTax" readonly /></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
+      <tr>
+        <td>
+          <strong>Tax Amount (in words):</strong> INR
+          <input type="text" id="taxAmountInWords" readonly />
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      <tr>
+        <td>
+          <strong>Remarks:</strong>
+          <input
+            type="text"
+            placeholder="Transaction Id:XXXXXXXXX  Rs.XXXX  PhonePe/Card/Cash"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>Declaration:</strong>
+          We declare that this invoice shows the actual price of the goods
+          described and that all particulars are true and correct.
+        </td>
+      </tr>
+      <tr>
+        <td class="right-text">
+          <strong>for J.S. JEWELLERS</strong><br />
+          Authorized Signatory<br /><input type="text" />
+        </td>
+      </tr>
+    </table>
+
+    <p class="center-text">This is a Computer Generated Invoice</p>
+
+    <script>
+      var a = [
+        "",
+        "one ",
+        "two ",
+        "three ",
+        "four ",
+        "five ",
+        "six ",
+        "seven ",
+        "eight ",
+        "nine ",
+        "ten ",
+        "eleven ",
+        "twelve ",
+        "thirteen ",
+        "fourteen ",
+        "fifteen ",
+        "sixteen ",
+        "seventeen ",
+        "eighteen ",
+        "nineteen ",
+      ];
+      var b = [
+        "",
+        "",
+        "twenty",
+        "thirty",
+        "forty",
+        "fifty",
+        "sixty",
+        "seventy",
+        "eighty",
+        "ninety",
+      ];
+
+      function inWords(num) {
+        let parts = num.split(".");
+        let integerPart = parts[0];
+        let decimalPart = parts[1] || "";
+        let str = "";
+        integerPart = ("000000000" + integerPart)
+          .substr(-9)
+          .match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+        if (integerPart) {
+          str +=
+            integerPart[1] != 0
+              ? (a[Number(integerPart[1])] ||
+                  b[integerPart[1][0]] + " " + a[integerPart[1][1]]) + "crore "
+              : "";
+          str +=
+            integerPart[2] != 0
+              ? (a[Number(integerPart[2])] ||
+                  b[integerPart[2][0]] + " " + a[integerPart[2][1]]) + "lakh "
+              : "";
+          str +=
+            integerPart[3] != 0
+              ? (a[Number(integerPart[3])] ||
+                  b[integerPart[3][0]] + " " + a[integerPart[3][1]]) +
+                "thousand "
+              : "";
+          str +=
+            integerPart[4] != 0
+              ? (a[Number(integerPart[4])] ||
+                  b[integerPart[4][0]] + " " + a[integerPart[4][1]]) +
+                "hundred "
+              : "";
+          str +=
+            integerPart[5] != 0
+              ? (str != "" ? "and " : "") +
+                (a[Number(integerPart[5])] ||
+                  b[integerPart[5][0]] + " " + a[integerPart[5][1]])
+              : "";
+        }
+
+        if (decimalPart && decimalPart !== "00") {
+          let decimalWords = "";
+          for (let digit of decimalPart) {
+            decimalWords += a[Number(digit)] || "";
+          }
+          str += (str ? "point " : "") + decimalWords.trim();
+        }
+
+        str += decimalPart && decimalPart !== "00" ? " only" : "only";
+
+        return str.trim();
+      }
+
+      function updateAmount() {
+        let total = 0;
+        const rows = document.querySelectorAll("#itemsTable tr");
+        rows.forEach((row) => {
+          const quantity = parseFloat(row.querySelector(".quantity").value) || 0;
+          const rate = parseFloat(row.querySelector(".rate").value) || 0;
+          const labour = parseFloat(row.querySelector(".labour").value) || 0;
+          const amount = (quantity * rate) + labour;
+          row.querySelector(".amount").value = amount.toFixed(2);
+          total += amount;
+        });
+
+        document.getElementById("totalAmount").value = total.toFixed(2);
+        document.getElementById("amountInWords").value = inWords(
+          total.toFixed(2).toString()
+        );
+        document.getElementById("taxableValue").value = total.toFixed(1);
+        calculateTaxes();
+      }
+
+      let i = 1;
+      function addItem() {
+        const table = document.getElementById("itemsTable");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                <td><input value="${
+                  i + 1
+                }" type="number" style="border: none"></td>
+                <td><input class="max-width" type="text"></td>
+                <td><input class="max-width hsn" type="text" onblur="setupHsnInput()"></td>
+                <td><input class="quantity max-width" onblur="updateAmount()" type="text"></td>
+                <td><input class="rate max-width" onblur="updateAmount()" type="text"></td>
+                <td><input class="labour max-width" onblur="updateAmount()" type="text"></td>
+                <td><input class="amount max-width" style="border: none" value="0" readonly></td>
+            `;
+        table.appendChild(row);
+        i += 1;
+      }
+
+      function calculateTaxes() {
+        const taxableValue = parseFloat(
+          document.getElementById("taxableValue").value.replace(",", "") || 0
+        );
+        const cgstPercentage = parseFloat(
+          document.getElementById("cgstPercentage").value.replace("%", "") || 0
+        );
+        const sgstPercentage = parseFloat(
+          document.getElementById("sgstPercentage").value.replace("%", "") || 0
+        );
+        const cgstAmount = (taxableValue * cgstPercentage) / 100;
+        const sgstAmount = (taxableValue * sgstPercentage) / 100;
+        const totalTaxAmount = cgstAmount + sgstAmount;
+        const totalAmount = taxableValue + totalTaxAmount;
+
+        document.getElementById("totalTaxAmount").value = totalTaxAmount.toFixed(2);
+        document.getElementById("totalAmountWithTax").value = totalAmount.toFixed(2);
+
+        document.getElementById("taxAmountInWords").value = inWords(
+          totalTaxAmount.toFixed(2).toString()
+        );
+      }
+    </script>
+  </body>
+</html>
